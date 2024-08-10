@@ -17,11 +17,24 @@ export default class AboutCommand {
         const base = interaction || message;
 
         const RSSCHECK = (await this.client.parser.parseSubredditCommunity()).error;
+        let githubdata;
+        try {
+            githubdata = await this.client.getTopContributors();
+        } catch(e) {
+            return base.reply({ content: e.message });
+        }
 
+        const contributionMap = githubdata.sort((a, b) => a.contributions - b.contributions).map((v) => {
+            return `[${v.login}](${v.url}): ${v.contributions} contribution(s)!\n`
+        }).splice(0, 5);
+        
         const InformationEmbed = new EmbedBuilder()
             .setTitle("Oh, woah!")
             .setDescription(`A new project appears before your eyes!\nI'm \`name\`, the discord bot behind \`Dumb Vocaloid News\`!\nI usually provide updates to what may be happening in the vast world of VOCALOID, however, I'm not quite there yet to provide ALL of the updates. I will be soon though!\n\nIf you'd like to contribute to my future -- which would be greatly appreaciated -- and even be credited for it, why not take a look at [my source code](https://github.com/dumbvocaloidnews/dvn-discord-bot)?\n\n-# Made by [@dumbspacepupper on Discord | @dumbspacedog on GitHub] with 💘`)
-            .addFields([{ name: "Technical Information", value: `CLUSTERING STATUS: ${this.client.cluster.ids.length} -- OK\nMEMORY USAGE: N/A -- OK\nRSS STATUS: ${RSSCHECK ? "NOT OK" : "OK"}`}])
+            .addFields([
+                { name: "Technical Information", value: `CLUSTERING STATUS: ${this.client.cluster.ids.length} -- OK\nMEMORY USAGE: N/A -- OK\nRSS STATUS: ${RSSCHECK ? "NOT OK" : "OK"}`},
+                { name: "Contributer Information", value: `-# ${githubdata.length} total contributor(s)!\n${contributionMap}` }
+            ])
             .setColor("White")
             .setTimestamp();
 

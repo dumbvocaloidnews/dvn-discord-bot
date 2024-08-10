@@ -1,0 +1,5 @@
+#!/bin/bash
+yarn install --force --emoji true
+tsc --build --clean
+tsc --build --pretty --listFiles
+cd build && node .
