@@ -15,7 +15,7 @@ export class DivaParser {
     async parseSubredditCommunity(communityName?: string) {
         if (!communityName) communityName = "hatsunemiku";
         try {
-            console.debug(`getting feed for https://reddit.com/r/${communityName}.rss`);
+
             const parsedFeed = await ParseClient.parseURL(`https://reddit.com/r/${communityName}.rss`);
             
             const sanitizedFeed = parsedFeed.items.map((value) => {

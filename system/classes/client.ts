@@ -1,10 +1,12 @@
 import { Client } from 'discord.js';
 import { ClusterClient, getInfo } from "discord-hybrid-sharding";
 import { DivaParser } from './parser';
+import { CommandHandler } from './commands';
 
 export class DivaClient extends Client {
-    public cluster: ClusterClient<Client>;
+    public cluster: ClusterClient<DivaClient>;
     public parser: DivaParser;
+    public commands: CommandHandler;
 
     constructor() {
         super({
@@ -15,6 +17,7 @@ export class DivaClient extends Client {
 
         this.cluster = new ClusterClient(this);
         this.parser = new DivaParser(this);
+        this.commands = new CommandHandler(this);
     }
 }
 
